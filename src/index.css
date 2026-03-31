@@ -1,0 +1,50 @@
+:root {
+  --bg: #faf9f6;
+  --bg-stage: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #666;
+  --accent: #c4553a;
+  --border: #e0ddd8;
+  --guide-border: rgba(0, 0, 0, 0.04);
+  --perf-bg: rgba(0, 0, 0, 0.85);
+  --perf-text: #00ff88;
+  --exclusion-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+
+  --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino,
+    serif;
+  --sans: "Inter", system-ui, -apple-system, sans-serif;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f0f0f;
+    --bg-stage: #1a1a1a;
+    --text: #e8e4df;
+    --text-muted: #999;
+    --accent: #e07a5f;
+    --border: #2a2a2a;
+    --guide-border: rgba(255, 255, 255, 0.04);
+    --exclusion-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #0a0a0c;
+  color: var(--text);
+  font-family: var(--sans);
+}
+
+#root {
+  min-height: 100vh;
+}
