@@ -20,11 +20,11 @@ const COL_GAP = 44;
 const BOTTOM_GAP = 20;
 const MIN_SLOT_WIDTH = 50;
 const NARROW_BP = 760;
-const NARROW_GUTTER = 20;
-const NARROW_COL_GAP = 20;
-const NARROW_BOTTOM_GAP = 16;
-const NARROW_ORB_SCALE = 0.55;
-const NARROW_ACTIVE_ORBS = 3;
+const NARROW_GUTTER = 16;
+const NARROW_COL_GAP = 16;
+const NARROW_BOTTOM_GAP = 12;
+const NARROW_ORB_SCALE = 0.4;
+const NARROW_ACTIVE_ORBS = 2;
 const DROP_CAP_LINES = 3;
 
 // ─── CV Text ───────────────────────────────────────────────────────
@@ -426,6 +426,15 @@ function init(stage: HTMLDivElement) {
 
   window.addEventListener("resize", scheduleRender);
 
+  // On mobile, only block scroll when actively dragging an orb
+  stage.addEventListener(
+    "touchmove",
+    (e) => {
+      if (drag !== null) e.preventDefault();
+    },
+    { passive: false }
+  );
+
   // ── Headline cache ──
   let cachedHW = -1,
     cachedHH = -1,
@@ -565,8 +574,9 @@ function init(stage: HTMLDivElement) {
         o.y = r + gutter * 0.5;
         o.vy = Math.abs(o.vy);
       }
-      if (o.y + r > ph - bottomGap) {
-        o.y = ph - bottomGap - r;
+      const maxY = isNarrow ? ph * 0.6 : ph - bottomGap;
+      if (o.y + r > maxY) {
+        o.y = maxY - r;
         o.vy = -Math.abs(o.vy);
       }
     }
@@ -647,7 +657,8 @@ function init(stage: HTMLDivElement) {
     const contactH = 16;
     const bodyTop =
       gutter + hHeight + subheadH + contactH + (isNarrow ? 14 : 24);
-    const bodyHeight = ph - bodyTop - bottomGap;
+    // On mobile (single column, scrollable), give plenty of vertical space
+    const bodyHeight = isNarrow ? 4000 : ph - bodyTop - bottomGap;
     const colCount = pw > 1000 ? 3 : pw > 640 ? 2 : 1;
     const totalGutter = gutter * 2 + colGap * (colCount - 1);
     const maxCW = Math.min(pw, 1500);
@@ -814,6 +825,15 @@ function init(stage: HTMLDivElement) {
     document.body.style.cursor =
       drag !== null ? "grabbing" : hovered !== -1 ? "grab" : "";
     stage.style.userSelect = drag !== null ? "none" : "";
+
+    // On mobile, resize stage to fit all content
+    if (isNarrow && allBodyLines.length > 0) {
+      const lastLine = allBodyLines[allBodyLines.length - 1]!;
+      const contentBottom = lastLine.y + BODY_LINE_HEIGHT + 40;
+      stage.style.minHeight = `${contentBottom}px`;
+    } else {
+      stage.style.minHeight = "";
+    }
 
     // Perf
     perfEl.textContent = `Layout: ${layoutMs.toFixed(2)}ms · Lines: ${allBodyLines.length} · Reflows: 0`;

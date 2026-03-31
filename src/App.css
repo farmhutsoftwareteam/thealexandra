@@ -205,10 +205,27 @@
   overflow: hidden;
 }
 
+@media (max-width: 760px) {
+  .cv-fullpage {
+    position: relative;
+    min-height: 100vh;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 .cv-stage-full {
   position: absolute;
   inset: 0;
   overflow: hidden;
+}
+
+@media (max-width: 760px) {
+  .cv-stage-full {
+    position: relative;
+    min-height: 100vh;
+  }
+}
 }
 
 /* ── Headline ── */
@@ -232,6 +249,14 @@
   white-space: nowrap;
 }
 
+@media (max-width: 760px) {
+  .cv-subhead {
+    font-size: 11px;
+    white-space: normal;
+    max-width: calc(100vw - 32px);
+  }
+}
+
 /* ── Contact Bar ── */
 .cv-contact-bar {
   position: absolute;
@@ -239,6 +264,15 @@
   letter-spacing: 0.06em;
   color: rgba(240, 236, 228, 0.3);
   white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .cv-contact-bar {
+    font-size: 9px;
+    white-space: normal;
+    max-width: calc(100vw - 32px);
+    line-height: 1.6;
+  }
 }
 
 .cv-contact-bar a {
@@ -273,6 +307,12 @@
   color: rgba(240, 236, 228, 0.82);
   user-select: text;
   cursor: text;
+}
+
+@media (max-width: 760px) {
+  .cv-orb-label {
+    font-size: 9px;
+  }
 }
 
 /* ── Orbs ── */
