@@ -13,7 +13,9 @@ import {
 const BODY_FONT_FAMILY =
   '"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, serif';
 const BODY_FONT = `17px ${BODY_FONT_FAMILY}`;
+const BODY_FONT_NARROW = `14px ${BODY_FONT_FAMILY}`;
 const BODY_LINE_HEIGHT = 28;
+const BODY_LINE_HEIGHT_NARROW = 22;
 const HEADLINE_FONT_FAMILY = BODY_FONT_FAMILY;
 const GUTTER = 48;
 const COL_GAP = 44;
@@ -46,6 +48,16 @@ Career began at Zimbabwe Yellow Pages in 2018, contributing to the migration of 
 Currently building Menyu.pro, a SaaS menu studio for restaurants, and serving as Creative Director and Tech Lead for Freyt365, a finance and fuel management platform for transporters across Southern Africa. Technical range spans mobile development with React Native, Expo, Swift, and SwiftUI; frontend with Next.js, React, TypeScript, and Tailwind CSS; backend with Hono, Node.js, Python, Django, Supabase, and PostgreSQL; AI integration with LLMs, LangChain, OpenAI API, and Claude API; and DevOps across Docker, Vercel, Cloudflare, and GitHub Actions.
 
 Speaks English fluently, Shona natively, and conversational Ndebele. Based in Cape Town, South Africa, working remotely with teams and clients across four continents. Driven by the belief that great software should feel inevitable — as if it could not have been built any other way.`;
+
+const BODY_TEXT_MOBILE = `Product Architect and software engineer with six years shipping mobile apps, SaaS platforms, and AI-powered tools across Africa and globally. Co-founder of Farmhut Africa — winner of the $100K Hult Prize in 2021, Anzisha Prize Fellow, and UN75 Award recipient.
+
+Currently co-leading Studio 82, a creative technology studio with four iOS apps on the App Store: Terrace H4, Ten-S, Nurvy, and Nomm. Also built AgentBrowser, a macOS app powered by Claude Code.
+
+Top Rated Plus on Upwork with $100K+ billed since 2019. Largest engagement: the Byrna POS system — $32K over twelve months. Specializes in React Native, Next.js, TypeScript, Supabase, Swift, and AI integration.
+
+Previously co-founded Kwingy (UK, digital transformation) and built loan management systems at Raysun Capital. Career started at Zimbabwe Yellow Pages. BSc Chemical Engineering from NUST, Bulawayo.
+
+Currently building Menyu.pro for restaurants and leading Freyt365 for transporters. Based in Cape Town, working remotely across four continents.`;
 
 const PULLQUOTE_TEXTS = [
   '"One of eleven global winners — $100,000 from the Hult Prize Foundation. Top 26 Anzisha Fellow. UN75 Award. MIT Solve recognition."',
@@ -289,17 +301,21 @@ export function CVAlexandria() {
 }
 
 function init(stage: HTMLDivElement) {
-  // ── Prepare text ──
-  const preparedBody = prepareWithSegments(BODY_TEXT, BODY_FONT);
-  const PQ_FONT = `italic 18px ${BODY_FONT_FAMILY}`;
-  const PQ_LINE_HEIGHT = 26;
+  // ── Prepare text — use condensed version on mobile ──
+  const isInitNarrow = window.innerWidth < NARROW_BP;
+  const bodyFont = isInitNarrow ? BODY_FONT_NARROW : BODY_FONT;
+  const bodyLineHeight = isInitNarrow ? BODY_LINE_HEIGHT_NARROW : BODY_LINE_HEIGHT;
+  const bodyText = isInitNarrow ? BODY_TEXT_MOBILE : BODY_TEXT;
+  const preparedBody = prepareWithSegments(bodyText, bodyFont);
+  const PQ_FONT = `italic ${isInitNarrow ? 14 : 18}px ${BODY_FONT_FAMILY}`;
+  const PQ_LINE_HEIGHT = isInitNarrow ? 20 : 26;
   const preparedPullquotes = PULLQUOTE_TEXTS.map((t) =>
     prepareWithSegments(t, PQ_FONT)
   );
 
-  const DROP_CAP_SIZE = BODY_LINE_HEIGHT * DROP_CAP_LINES - 4;
+  const DROP_CAP_SIZE = bodyLineHeight * DROP_CAP_LINES - 4;
   const DROP_CAP_FONT = `700 ${DROP_CAP_SIZE}px ${BODY_FONT_FAMILY}`;
-  const DROP_CAP_CHAR = BODY_TEXT[0]!;
+  const DROP_CAP_CHAR = bodyText[0]!;
   const preparedDropCap = prepareWithSegments(DROP_CAP_CHAR, DROP_CAP_FONT);
 
   let dropCapWidth = 0;
@@ -657,8 +673,7 @@ function init(stage: HTMLDivElement) {
     const contactH = 16;
     const bodyTop =
       gutter + hHeight + subheadH + contactH + (isNarrow ? 14 : 24);
-    // On mobile (single column, scrollable), give plenty of vertical space
-    const bodyHeight = isNarrow ? 4000 : ph - bodyTop - bottomGap;
+    const bodyHeight = ph - bodyTop - bottomGap;
     const colCount = pw > 1000 ? 3 : pw > 640 ? 2 : 1;
     const totalGutter = gutter * 2 + colGap * (colCount - 1);
     const maxCW = Math.min(pw, 1500);
@@ -672,7 +687,7 @@ function init(stage: HTMLDivElement) {
       x: contentLeft - 2,
       y: bodyTop - 2,
       w: DROP_CAP_W,
-      h: DROP_CAP_LINES * BODY_LINE_HEIGHT + 2,
+      h: DROP_CAP_LINES * bodyLineHeight + 2,
     };
 
     // Pullquotes
@@ -728,7 +743,7 @@ function init(stage: HTMLDivElement) {
         bodyTop,
         colW,
         bodyHeight,
-        BODY_LINE_HEIGHT,
+        bodyLineHeight,
         circleObs,
         rects,
         isNarrow
@@ -773,8 +788,8 @@ function init(stage: HTMLDivElement) {
       el.textContent = l.text;
       el.style.left = `${l.x}px`;
       el.style.top = `${l.y}px`;
-      el.style.font = BODY_FONT;
-      el.style.lineHeight = `${BODY_LINE_HEIGHT}px`;
+      el.style.font = bodyFont;
+      el.style.lineHeight = `${bodyLineHeight}px`;
     }
 
     // Pullquote boxes + lines
@@ -825,15 +840,6 @@ function init(stage: HTMLDivElement) {
     document.body.style.cursor =
       drag !== null ? "grabbing" : hovered !== -1 ? "grab" : "";
     stage.style.userSelect = drag !== null ? "none" : "";
-
-    // On mobile, resize stage to fit all content
-    if (isNarrow && allBodyLines.length > 0) {
-      const lastLine = allBodyLines[allBodyLines.length - 1]!;
-      const contentBottom = lastLine.y + BODY_LINE_HEIGHT + 40;
-      stage.style.minHeight = `${contentBottom}px`;
-    } else {
-      stage.style.minHeight = "";
-    }
 
     // Perf
     perfEl.textContent = `Layout: ${layoutMs.toFixed(2)}ms · Lines: ${allBodyLines.length} · Reflows: 0`;

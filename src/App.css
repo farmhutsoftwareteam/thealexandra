@@ -205,26 +205,10 @@
   overflow: hidden;
 }
 
-@media (max-width: 760px) {
-  .cv-fullpage {
-    position: relative;
-    min-height: 100vh;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-}
-
 .cv-stage-full {
   position: absolute;
   inset: 0;
   overflow: hidden;
-}
-
-@media (max-width: 760px) {
-  .cv-stage-full {
-    position: relative;
-    min-height: 100vh;
-  }
 }
 }
 
